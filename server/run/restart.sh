@@ -1,6 +1,15 @@
 #/bin/sh
 #start or stop the im-server
 
+LOGIN_SERVER=login_server
+MSG_SERVER=msg_server
+ROUTE_SERVER=route_server
+HTTP_MSG_SERVER=http_msg_server
+FILE_SERVER=file_server
+PUSH_SERVER=push_server
+DB_PROXY_SERVER=db_proxy_server
+MSFS=msfs
+
 
 function restart() {
     cd $1
@@ -16,7 +25,7 @@ function restart() {
         kill $pid
         while true
         do
-            oldpid=`ps -ef|grep $1|grep $pid`;
+            oldpid=`pgrep $1`;
             if [ $oldpid" " == $pid" " ]; then
                 echo $oldpid" "$pid
                 sleep 1
@@ -31,29 +40,49 @@ function restart() {
 }
 
 case $1 in
-	login_server)
+	$LOGIN_SERVER)
 		restart $1
 		;;
-	msg_server)
+	$MSG_SERVER)
 		restart $1
 		;;
-	route_server)
+	$ROUTE_SERVER)
 		restart $1
 		;;
-	http_msg_server)
+	$HTTP_MSG_SERVER)
 		restart $1
 		;;
-	file_server)
+	$FILE_SERVER)
 		restart $1
 		;;
-  push_server)
-    restart $1
-    ;;
-  db_proxy_server)
-  restart $1
-  ;;
+	$PUSH_SERVER)
+		restart $1
+		;;
+	$DB_PROXY_SERVER)
+		restart $1
+		;;
+	$MSFS)
+		restart $1
+		;;
+	all)
+		restart $LOGIN_SERVER
+		cd ..
+		restart $MSG_SERVER
+		cd ..
+		restart $ROUTE_SERVER
+		cd ..
+		restart $MSFS
+		cd ..
+		restart $HTTP_MSG_SERVER
+		cd ..
+		restart $FILE_SERVER
+		cd ..
+		restart $PUSH_SERVER
+		cd ..
+		restart $DB_PROXY_SERVER
+		;;
 	*)
 		echo "Usage: "
-		echo "  ./restart.sh (login_server|msg_server|route_server|http_msg_server|file_server|push_server)"
+		echo "  ./restart.sh (login_server|msg_server|route_server|http_msg_server|file_server|push_server|msfs|all)"
 		;;
 esac
